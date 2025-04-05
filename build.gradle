@@ -13,6 +13,37 @@ java {
     }
 }
 
+def getGithubToken() {
+    def token = System.getenv("GITHUB_TOKEN")
+    if (!token) {
+        try {
+            def proc = "gh auth token".execute()
+            proc.waitFor()
+            token = proc.in.text.trim()
+        } catch (Exception e) {
+            logger.warn("Failed to get GitHub token via gh", e)
+        }
+    }
+    println("Token: ${token}")
+    println("Token: ${token[0..3]}${'*' * (token.length() - 9)}${token[-5..-1]}")
+    return token ?: ""
+}
+
+def getGithubUser() {
+    def user = System.getenv("GITHUB_USER")
+    if (!user) {
+        try {
+            def proc = "gh api user --jq .login".execute()
+            proc.waitFor()
+            user = proc.in.text.trim()
+        } catch (Exception e) {
+            logger.warn("Failed to get GitHub username via gh", e)
+        }
+    }
+    println("Username: ${user}")
+    return user ?: ""
+}
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
@@ -21,16 +52,28 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven {
+        url = uri("https://maven.pkg.github.com/ERP-Modula/common-lib")
+        credentials {
+            username = System.getenv("GITHUB_USER") ?: getGithubUser()
+            password = System.getenv("GITHUB_TOKEN") ?: getGithubToken()
+        }
+    }
 }
 
 dependencies {
+    implementation 'com.modula:common-lib:1.0.18'
+
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.kafka:spring-kafka'
 
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.2.1'
+
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.kafka:spring-kafka-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

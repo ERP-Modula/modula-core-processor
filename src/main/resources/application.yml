@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: core-processor
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/modula}
+    username: ${SPRING_DATASOURCE_USERNAME:admin}
+    password: ${SPRING_DATASOURCE_PASSWORD:admin}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+feign:
+  clients:
+    core-builder:
+      url: ${CORE_BUILDER_CLIENT_URL:http://localhost:8090/}
