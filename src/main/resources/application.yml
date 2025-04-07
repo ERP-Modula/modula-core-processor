@@ -6,6 +6,26 @@ spring:
     username: ${SPRING_DATASOURCE_USERNAME:admin}
     password: ${SPRING_DATASOURCE_PASSWORD:admin}
 
+
+  kafka:
+    bootstrap-servers: ${KAFKA-BROKERS:host.docker.internal:29092}
+    listener:
+      ack-mode: record
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: com.modula.coreprocessor.configuration.DltMessageSerializer
+      retries: 3
+    consumer:
+      autoOffsetReset: earliest
+      keyDeserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      valueDeserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+
+
+kafka:
+  topics:
+    workflow-executor-topic: exec-topic
+
+
   jpa:
     hibernate:
       ddl-auto: update

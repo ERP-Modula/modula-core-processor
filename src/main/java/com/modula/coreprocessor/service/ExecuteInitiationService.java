@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class ExecutionService {
+public class ExecuteInitiationService {
 
     private final CoreBuilderClient coreBuilderClient;
     private final WorkflowInterpreter workflowInterpreter;

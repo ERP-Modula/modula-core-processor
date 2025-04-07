@@ -1,7 +1,7 @@
 package com.modula.coreprocessor.controller;
 
 import com.modula.coreprocessor.domain.dto.execution.StartConfDTO;
-import com.modula.coreprocessor.service.ExecutionService;
+import com.modula.coreprocessor.service.ExecuteInitiationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ExecutionController {
 
-    private final ExecutionService executionService;
+    private final ExecuteInitiationService executionService;
 
     @PostMapping
     public void startWorkflow(StartConfDTO startConfDTO) {
