@@ -36,8 +36,8 @@ public class KafkaConfiguration {
         kafkaListenerContainerFactory.setConsumerFactory(consumerFactory);
         // Возврат сообщений в DLT очередь
         kafkaListenerContainerFactory.setCommonErrorHandler(errorHandler);
-        // Обработка сообщений в 4 потока
-        kafkaListenerContainerFactory.setConcurrency(4);
+        // Обработка сообщений в 1 потока
+        kafkaListenerContainerFactory.setConcurrency(1);
         return kafkaListenerContainerFactory;
     }
 

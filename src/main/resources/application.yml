@@ -5,31 +5,41 @@ spring:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/modula}
     username: ${SPRING_DATASOURCE_USERNAME:admin}
     password: ${SPRING_DATASOURCE_PASSWORD:admin}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 
   kafka:
-    bootstrap-servers: ${KAFKA-BROKERS:host.docker.internal:29092}
+    bootstrap-servers: ${KAFKA-BROKERS:localhost:9092}
     listener:
       ack-mode: record
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: com.modula.coreprocessor.configuration.DltMessageSerializer
-      retries: 3
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+#      retries: 3
+      properties:
+        enable.idempotence: true
+        acks: all
+        retries: 2147483647
+        transactional.id: my-producer-id
     consumer:
       autoOffsetReset: earliest
-      keyDeserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
-      valueDeserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      keyDeserializer: org.apache.kafka.common.serialization.StringDeserializer
+      valueDeserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      enable-auto-commit: false
+      isolation-level: read_committed
+
+      properties:
+        spring.json.trusted.packages: "com.modula.coreprocessor.domain.dto.*"
+
 
 
 kafka:
   topics:
     workflow-executor-topic: exec-topic
 
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 feign:
   clients:

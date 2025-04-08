@@ -1,6 +1,6 @@
 package com.modula.coreprocessor.service.workflow.execution;
 
-import com.modula.coreprocessor.domain.dto.execution.IntegrationTask;
+import com.modula.coreprocessor.domain.dto.integration.IntegrationTask;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;

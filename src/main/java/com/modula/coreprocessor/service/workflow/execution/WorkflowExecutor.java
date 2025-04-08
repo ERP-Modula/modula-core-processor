@@ -4,9 +4,10 @@ import com.modula.common.domain.workflow.execution.IntegrationOutputObject;
 import com.modula.common.domain.workflow.execution.OutputInterfaceField;
 import com.modula.common.domain.workflow.execution.WorkflowInstance;
 import com.modula.common.domain.workflow.step.Step;
-import com.modula.coreprocessor.domain.dto.integration.ExecutorTask;
+import com.modula.coreprocessor.domain.dto.execution.ExecutorTask;
 import com.modula.coreprocessor.service.StepService;
 import com.modula.coreprocessor.service.WorkflowInstanceService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,7 @@ public class WorkflowExecutor {
      * @param task результат исполнения currStep
      */
 
+    @Transactional
     public void handleTask(ExecutorTask task) {
         WorkflowInstance workflowInstance = workflowInstanceService.getInstance(task.getWorkflowInstanceId());
 
@@ -122,6 +124,7 @@ public class WorkflowExecutor {
     }
 
     private void addIntegrationOutputResultToContext(WorkflowInstance workflowInstance, IntegrationOutputObject outputObject) {
-        workflowInstance.getContext().add(outputObject);
+        if (outputObject != null)
+            workflowInstance.getContext().add(outputObject);
     }
 }

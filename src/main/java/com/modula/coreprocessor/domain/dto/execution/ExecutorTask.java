@@ -1,13 +1,14 @@
-package com.modula.coreprocessor.domain.dto.integration;
+package com.modula.coreprocessor.domain.dto.execution;
 
 import com.modula.common.domain.workflow.execution.IntegrationOutputObject;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.util.UUID;
 
-@Data
+@Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ExecutorTask {
     private UUID workflowInstanceId;
     private Boolean isFirstStep;

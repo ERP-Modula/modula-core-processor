@@ -8,5 +8,6 @@ import java.util.UUID;
 @Data
 public class IntegrationTask {
     private UUID workflowInstanceId;
-    Map<String, String> params;
+    private String actionName;
+    private Map<String, String> params;
 }
