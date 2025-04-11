@@ -7,7 +7,9 @@ import com.modula.coreprocessor.repository.WorkflowInstanceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -40,7 +42,8 @@ public class WorkflowInstanceService {
                         .collect(Collectors.toList())
         );
         instance.setCurrentStepId(null);
-
+        instance.setIsRoot(true);
+        instance.setStartTime(new java.sql.Date(System.currentTimeMillis()));
 
         instance.setContext(new ArrayList<>());
 
@@ -63,6 +66,11 @@ public class WorkflowInstanceService {
                         .map(object -> integrationOutputObjectService.getIntegrationOutputObject(object.getId()))
                         .collect(Collectors.toList())
         );
+
+        newInstance.setIsRoot(false);
+        workflowInstance.getSub().add(newInstance);
+
+        saveInstance(workflowInstance);
 
         return newInstance;
     }

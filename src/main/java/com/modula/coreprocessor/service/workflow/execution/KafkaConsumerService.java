@@ -1,6 +1,7 @@
 package com.modula.coreprocessor.service.workflow.execution;
 
-import com.modula.coreprocessor.domain.dto.execution.ExecutorTask;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.modula.common.domain.workflow.execution.events.ExecutorTask;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;

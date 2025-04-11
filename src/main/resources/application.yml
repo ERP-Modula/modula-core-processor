@@ -9,6 +9,7 @@ spring:
     hibernate:
       ddl-auto: update
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
 
 
   kafka:
@@ -23,7 +24,7 @@ spring:
         enable.idempotence: true
         acks: all
         retries: 2147483647
-        transactional.id: my-producer-id
+        transactional.id: producer-id-core-processor
     consumer:
       autoOffsetReset: earliest
       keyDeserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -32,7 +33,7 @@ spring:
       isolation-level: read_committed
 
       properties:
-        spring.json.trusted.packages: "com.modula.coreprocessor.domain.dto.*"
+        spring.json.trusted.packages: "com.modula.common.domain.workflow.execution.events"
 
 
 

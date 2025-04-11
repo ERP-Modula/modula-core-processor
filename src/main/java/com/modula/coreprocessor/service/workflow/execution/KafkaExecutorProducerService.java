@@ -1,6 +1,6 @@
 package com.modula.coreprocessor.service.workflow.execution;
 
-import com.modula.coreprocessor.domain.dto.integration.IntegrationTask;
+import com.modula.common.domain.workflow.execution.events.IntegrationTask;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -14,10 +14,11 @@ public class KafkaExecutorProducerService {
 
     private final KafkaTemplate<Object, Object> kafkaTemplate;
 
-    public void sendTaskToIntegrationModule(UUID workflowInstanceId, Map<String, String> params, String stepSource) {
+    public void sendTaskToIntegrationModule(UUID workflowInstanceId, Map<String, String> params, String stepSource, UUID stepId) {
         IntegrationTask integrationTask = new IntegrationTask();
         integrationTask.setParams(params);
         integrationTask.setWorkflowInstanceId(workflowInstanceId);
+        integrationTask.setStepId(stepId);
 
         String[] source = stepSource.split(":");
         if (source.length != 2)

@@ -1,10 +1,12 @@
 package com.modula.coreprocessor.service.workflow.execution;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.modula.common.domain.workflow.execution.IntegrationOutputObject;
 import com.modula.common.domain.workflow.execution.OutputInterfaceField;
 import com.modula.common.domain.workflow.execution.WorkflowInstance;
+import com.modula.common.domain.workflow.execution.events.ExecutorTask;
 import com.modula.common.domain.workflow.step.Step;
-import com.modula.coreprocessor.domain.dto.execution.ExecutorTask;
 import com.modula.coreprocessor.service.StepService;
 import com.modula.coreprocessor.service.WorkflowInstanceService;
 import jakarta.transaction.Transactional;
@@ -45,9 +47,11 @@ public class WorkflowExecutor {
         }
 
 
+
         // если нет следующих шагов, то был выполнен последний
         if (nextSteps.isEmpty()) {
-            //TODO check workflow instances count and send message to notification service
+            workflowInstanceService.saveInstance(workflowInstance);
+            //TODO check workflow instances count
             return;
         }
 
@@ -73,9 +77,8 @@ public class WorkflowExecutor {
 
         fillStepConfVariables(stepConf, context);
 
-        //TODO send to kafka
         String stepSource = currStep.getSource();
-        kafkaExecutorProducerService.sendTaskToIntegrationModule(workflowInstance.getId(), stepConf, stepSource);
+        kafkaExecutorProducerService.sendTaskToIntegrationModule(workflowInstance.getId(), stepConf, stepSource, stepId);
 
 
         workflowInstance.setCurrentStepId(stepId);

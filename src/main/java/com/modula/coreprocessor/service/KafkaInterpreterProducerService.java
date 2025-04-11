@@ -1,6 +1,6 @@
 package com.modula.coreprocessor.service;
 
-import com.modula.coreprocessor.domain.dto.execution.ExecutorTask;
+import com.modula.common.domain.workflow.execution.events.ExecutorTask;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
