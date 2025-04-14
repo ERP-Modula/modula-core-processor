@@ -7,6 +7,7 @@ import com.modula.coreprocessor.repository.WorkflowInstanceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,8 +44,8 @@ public class WorkflowInstanceService {
         );
         instance.setCurrentStepId(null);
         instance.setIsRoot(true);
-        instance.setStartTime(new java.sql.Date(System.currentTimeMillis()));
-
+        instance.setStartTime(Timestamp.valueOf(LocalDateTime.now()));
+        
         instance.setContext(new ArrayList<>());
 
         return instance;

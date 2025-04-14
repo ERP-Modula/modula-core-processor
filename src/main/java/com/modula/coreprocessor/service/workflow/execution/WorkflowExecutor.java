@@ -46,10 +46,9 @@ public class WorkflowExecutor {
             nextSteps.addAll(currStep.getNextStepId());
         }
 
-
-
         // если нет следующих шагов, то был выполнен последний
         if (nextSteps.isEmpty()) {
+            workflowInstance.setIsDone(true);
             workflowInstanceService.saveInstance(workflowInstance);
             //TODO check workflow instances count
             return;
