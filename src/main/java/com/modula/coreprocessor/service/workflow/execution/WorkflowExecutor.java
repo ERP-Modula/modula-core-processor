@@ -1,7 +1,5 @@
 package com.modula.coreprocessor.service.workflow.execution;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.modula.common.domain.workflow.execution.IntegrationOutputObject;
 import com.modula.common.domain.workflow.execution.OutputInterfaceField;
 import com.modula.common.domain.workflow.execution.WorkflowInstance;
@@ -14,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -91,35 +91,57 @@ public class WorkflowExecutor {
 
             //значит что значение это ссылка на переменную
             if (splitVal.length > 1) {
-                String moduleName = splitVal[0];
+                String stepId = splitVal[0];
                 String linkStr = splitVal[1];
-
-                String varValue = findVariableValue(context, moduleName, linkStr);
+                String varValue = null;
+                try {
+                    varValue = findVariableValue(context, stepId, linkStr);
+                } catch (Exception ignored) {}
                 if (varValue != null) entry.setValue(varValue);
             }
         }
     }
 
-    private String findVariableValue(List<IntegrationOutputObject> context, String moduleName, String linkStr) {
-        IntegrationOutputObject outputObject = context.stream().filter(o -> o.getModuleName().equals(moduleName))
+    private String findVariableValue(List<IntegrationOutputObject> context, String stepId, String linkStr) throws NumberFormatException{
+        IntegrationOutputObject outputObject = context.stream().filter(o -> o.getStepId().equals(UUID.fromString(stepId)))
                 .findAny().orElse(null);
 
         if (outputObject == null) return null;
 
-        String[] path = linkStr.split(".");
+        String[] path = linkStr.split("\\.");
         int currPathPart = 0;
         List<OutputInterfaceField> currLayer = outputObject.getFields();
         while (currPathPart < path.length) {
 
+            int index = -1;
+
             int finalCurrPathPart = currPathPart;
-            Optional<OutputInterfaceField> field = currLayer.stream().filter(f -> f.getName().equals(path[finalCurrPathPart])).findFirst();
-            if (field.isEmpty()) return null;
+            String fieldName = path[finalCurrPathPart];
+
+            if (path[currPathPart].indexOf('[') != -1) {
+                // path contains array item
+                int b1 = path[currPathPart].indexOf('[');
+                int b2 = path[currPathPart].indexOf(']');
+                index = Integer.parseInt(path[currPathPart].substring(b1 + 1, b2));
+                fieldName = path[currPathPart].substring(0, b1);
+            }
+
+            OutputInterfaceField field;
+            String finalFieldName = fieldName;
+            Stream<OutputInterfaceField> stream = currLayer.stream().filter(f -> f.getName().equals(finalFieldName));
+            if (index != -1) {
+                field = stream.toList().get(index);
+            } else {
+                Optional<OutputInterfaceField> fieldOptional = stream.findFirst();
+                if (fieldOptional.isEmpty()) return null;
+                field = fieldOptional.get();
+            }
 
             if (currPathPart + 1 == path.length)
-                return field.get().getValue();
+                return field.getValue();
 
             currPathPart++;
-            currLayer = field.get().getSpec();
+            currLayer = field.getSpec();
         }
 
         return null;
