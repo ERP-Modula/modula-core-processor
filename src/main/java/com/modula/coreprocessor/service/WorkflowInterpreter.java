@@ -16,7 +16,6 @@ public class WorkflowInterpreter {
     @Transactional
     public void executeWorkflow(Workflow workflow) {
         WorkflowInstance workflowInstance = workflowInstanceService.createInstance(workflow);
-
         workflowInstance = workflowInstanceService.saveInstance(workflowInstance);
 
         // send to kafka

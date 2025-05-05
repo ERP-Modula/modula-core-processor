@@ -18,9 +18,7 @@ public class ExecuteInitiationService {
     public void executeWorkflow(StartConfDTO startConfDTO) {
         UUID id = startConfDTO.getWorkflowId();
         Workflow workflow = coreBuilderClient.getWorkflow(id);
-
         if (workflow == null) return;
-
         workflowInterpreter.executeWorkflow(workflow);
     }
 }

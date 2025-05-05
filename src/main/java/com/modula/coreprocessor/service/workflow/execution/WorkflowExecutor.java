@@ -50,7 +50,6 @@ public class WorkflowExecutor {
         if (nextSteps.isEmpty()) {
             workflowInstance.setIsDone(true);
             workflowInstanceService.saveInstance(workflowInstance);
-            //TODO check workflow instances count
             return;
         }
 
@@ -89,7 +88,7 @@ public class WorkflowExecutor {
             String val = entry.getValue();
             String[] splitVal = val.split(":");
 
-            //значит что значение это ссылка на переменную
+            //если условие верно, значит что значение это ссылка на переменную
             if (splitVal.length > 1) {
                 String stepId = splitVal[0];
                 String linkStr = splitVal[1];
@@ -119,7 +118,7 @@ public class WorkflowExecutor {
             String fieldName = path[finalCurrPathPart];
 
             if (path[currPathPart].indexOf('[') != -1) {
-                // path contains array item
+                // путь содержит обращение к массиву
                 int b1 = path[currPathPart].indexOf('[');
                 int b2 = path[currPathPart].indexOf(']');
                 index = Integer.parseInt(path[currPathPart].substring(b1 + 1, b2));
